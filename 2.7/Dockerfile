@@ -14,6 +14,6 @@ USER 33
 
 COPY start.sh /app/.whiskey/action_hooks/start
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD [ "/usr/local/s2i/bin/usage" ]
