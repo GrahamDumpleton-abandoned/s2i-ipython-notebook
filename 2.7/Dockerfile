@@ -1,13 +1,15 @@
 FROM grahamdumpleton/mod-wsgi-docker:python-2.7
 
 RUN apt-get update && apt-get install -y libfreetype6 libfreetype6-dev \
-    libpng++ libpng++-dev && rm -r /var/lib/apt/lists/*
+    libpng++ libpng++-dev liblapack-dev libatlas-dev gfortran && \
+    rm -r /var/lib/apt/lists/*
 
 RUN pip install jupyter
 RUN pip install ipython[notebook]
 RUN pip install matplotlib
 RUN pip install sympy
 RUN pip install ipyparallel
+RUN pip install scipy
 
 RUN chmod 1777 /app
 
