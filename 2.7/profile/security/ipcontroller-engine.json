@@ -1,0 +1,16 @@
+{
+  "control": 10006, 
+  "hb_ping": 10007, 
+  "hb_pong": 10008,
+  "interface": "tcp://ipcontroller", 
+  "iopub": 10009, 
+  "key": "daf0dd3c-a3b8-41de-8989-aed20cc6713c", 
+  "location": "ipcontroller", 
+  "mux": 10010, 
+  "pack": "json", 
+  "registration": 10004, 
+  "signature_scheme": "hmac-sha256", 
+  "ssh": "", 
+  "task": 10011, 
+  "unpack": "json"
+}

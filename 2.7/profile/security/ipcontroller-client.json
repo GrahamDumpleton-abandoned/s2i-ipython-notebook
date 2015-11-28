@@ -1,0 +1,16 @@
+{
+  "control": 10000, 
+  "interface": "tcp://ipcontroller",
+  "iopub": 10001, 
+  "key": "daf0dd3c-a3b8-41de-8989-aed20cc6713c", 
+  "location": "ipcontroller", 
+  "mux": 10002, 
+  "notification": 10003, 
+  "pack": "json", 
+  "registration": 10004, 
+  "signature_scheme": "hmac-sha256", 
+  "ssh": "", 
+  "task": 10005, 
+  "task_scheme": "leastload", 
+  "unpack": "json"
+}
