@@ -1,0 +1,1377 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "s2i-ipython-notebook"
+            },
+            "spec": {
+                "dockerImageRepository": "grahamdumpleton/s2i-ipython-notebook"
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "kind": "Template",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "ipython-cluster-workspace"
+            },
+            "parameters": [
+                {
+                    "description": "Label for IPython cluster.",
+                    "name": "IPYTHON_CLUSTER_LABEL",
+                    "from": "[a-f0-9]{5}",
+                    "generate": "expression"
+                }
+            ],
+            "objects": [
+                {
+                    "kind": "DeploymentConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "strategy": {
+                            "type": "Recreate"
+                        },
+                        "triggers": [
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "s2i-ipython-notebook:python-2.7"
+                                    }
+                                }
+                            }
+                        ],
+                        "replicas": 1,
+                        "selector": {
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                                    "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                                    "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                                        "image": "grahamdumpleton/s2i-ipython-notebook",
+                                        "ports": [
+                                            {
+                                                "containerPort": 10000,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10001,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10002,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10003,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10004,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10005,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10006,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10007,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10008,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10009,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10010,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10011,
+                                                "protocol": "TCP"
+                                            }
+                                        ],
+                                        "env": [
+                                            {
+                                                "name": "IPYTHON_CONTAINER_TYPE",
+                                                "value": "controller"
+                                            },
+                                            {
+                                                "name": "IPYTHON_CLUSTER_LABEL",
+                                                "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            }
+                                        ],
+                                        "resources": {},
+                                        "terminationMessagePath": "/dev/termination-log",
+                                        "imagePullPolicy": "IfNotPresent"
+                                    }
+                                ],
+                                "restartPolicy": "Always",
+                                "terminationGracePeriodSeconds": 30,
+                                "dnsPolicy": "ClusterFirst",
+                                "securityContext": {}
+                            }
+                        }
+                    },
+                    "status": {}
+                },
+                {
+                    "kind": "DeploymentConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "strategy": {
+                            "type": "Recreate"
+                        },
+                        "triggers": [
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "s2i-ipython-notebook:python-2.7"
+                                    }
+                                }
+                            }
+                        ],
+                        "replicas": 1,
+                        "selector": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                                    "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                                    "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                                        "image":
+                                        "grahamdumpleton/s2i-ipython-notebook:python-2.7",
+                                        "ports": [
+                                            {
+                                                "containerPort": 10000,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10001,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10002,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10003,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10004,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10005,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10006,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10007,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10008,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10009,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10010,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10011,
+                                                "protocol": "TCP"
+                                            }
+                                        ],
+                                        "env": [
+                                            {
+                                                "name": "IPYTHON_CONTAINER_TYPE",
+                                                "value": "engine"
+                                            },
+                                            {
+                                                "name": "IPYTHON_CLUSTER_LABEL",
+                                                "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            }
+                                        ],
+                                        "resources": {},
+                                        "terminationMessagePath": "/dev/termination-log",
+                                        "imagePullPolicy": "IfNotPresent"
+                                    }
+                                ],
+                                "restartPolicy": "Always",
+                                "terminationGracePeriodSeconds": 30,
+                                "dnsPolicy": "ClusterFirst",
+                                "securityContext": {}
+                            }
+                        }
+                    },
+                    "status": {}
+                },
+                {
+                    "kind": "Service",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "ports": [
+                            {
+                                "name": "10000-tcp",
+                                "protocol": "TCP",
+                                "port": 10000,
+                                "targetPort": 10000
+                            },
+                            {
+                                "name": "10001-tcp",
+                                "protocol": "TCP",
+                                "port": 10001,
+                                "targetPort": 10001
+                            },
+                            {
+                                "name": "10002-tcp",
+                                "protocol": "TCP",
+                                "port": 10002,
+                                "targetPort": 10002
+                            },
+                            {
+                                "name": "10003-tcp",
+                                "protocol": "TCP",
+                                "port": 10003,
+                                "targetPort": 10003
+                            },
+                            {
+                                "name": "10004-tcp",
+                                "protocol": "TCP",
+                                "port": 10004,
+                                "targetPort": 10004
+                            },
+                            {
+                                "name": "10005-tcp",
+                                "protocol": "TCP",
+                                "port": 10005,
+                                "targetPort": 10005
+                            },
+                            {
+                                "name": "10006-tcp",
+                                "protocol": "TCP",
+                                "port": 10006,
+                                "targetPort": 10006
+                            },
+                            {
+                                "name": "10007-tcp",
+                                "protocol": "TCP",
+                                "port": 10007,
+                                "targetPort": 10007
+                            },
+                            {
+                                "name": "10008-tcp",
+                                "protocol": "TCP",
+                                "port": 10008,
+                                "targetPort": 10008
+                            },
+                            {
+                                "name": "10009-tcp",
+                                "protocol": "TCP",
+                                "port": 10009,
+                                "targetPort": 10009
+                            },
+                            {
+                                "name": "10010-tcp",
+                                "protocol": "TCP",
+                                "port": 10010,
+                                "targetPort": 10010
+                            },
+                            {
+                                "name": "10011-tcp",
+                                "protocol": "TCP",
+                                "port": 10011,
+                                "targetPort": 10011
+                            }
+                        ],
+                        "selector": {
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "type": "ClusterIP",
+                        "sessionAffinity": "None"
+                    },
+                    "status": {
+                        "loadBalancer": {}
+                    }
+                },
+                {
+                    "kind": "Service",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "ports": [
+                            {
+                                "name": "10000-tcp",
+                                "protocol": "TCP",
+                                "port": 10000,
+                                "targetPort": 10000
+                            },
+                            {
+                                "name": "10001-tcp",
+                                "protocol": "TCP",
+                                "port": 10001,
+                                "targetPort": 10001
+                            },
+                            {
+                                "name": "10002-tcp",
+                                "protocol": "TCP",
+                                "port": 10002,
+                                "targetPort": 10002
+                            },
+                            {
+                                "name": "10003-tcp",
+                                "protocol": "TCP",
+                                "port": 10003,
+                                "targetPort": 10003
+                            },
+                            {
+                                "name": "10004-tcp",
+                                "protocol": "TCP",
+                                "port": 10004,
+                                "targetPort": 10004
+                            },
+                            {
+                                "name": "10005-tcp",
+                                "protocol": "TCP",
+                                "port": 10005,
+                                "targetPort": 10005
+                            },
+                            {
+                                "name": "10006-tcp",
+                                "protocol": "TCP",
+                                "port": 10006,
+                                "targetPort": 10006
+                            },
+                            {
+                                "name": "10007-tcp",
+                                "protocol": "TCP",
+                                "port": 10007,
+                                "targetPort": 10007
+                            },
+                            {
+                                "name": "10008-tcp",
+                                "protocol": "TCP",
+                                "port": 10008,
+                                "targetPort": 10008
+                            },
+                            {
+                                "name": "10009-tcp",
+                                "protocol": "TCP",
+                                "port": 10009,
+                                "targetPort": 10009
+                            },
+                            {
+                                "name": "10010-tcp",
+                                "protocol": "TCP",
+                                "port": 10010,
+                                "targetPort": 10010
+                            },
+                            {
+                                "name": "10011-tcp",
+                                "protocol": "TCP",
+                                "port": 10011,
+                                "targetPort": 10011
+                            }
+                        ],
+                        "selector": {
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "type": "ClusterIP",
+                        "sessionAffinity": "None"
+                    },
+                    "status": {
+                        "loadBalancer": {}
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "Template",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "ipython-notebook-workspace"
+            },
+            "parameters": [
+                {
+                    "description": "Label for IPython user.",
+                    "name": "IPYTHON_USER_LABEL",
+                    "from": "[a-f0-9]{5}",
+                    "generate": "expression"
+                },
+                {
+                    "description": "Label for IPython cluster.",
+                    "name": "IPYTHON_CLUSTER_LABEL",
+                    "from": "[a-f0-9]{5}",
+                    "generate": "expression"
+                }
+            ],
+            "objects": [
+                {
+                    "kind": "DeploymentConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "strategy": {
+                            "type": "Recreate",
+                            "resources": {}
+                        },
+                        "triggers": [
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "s2i-ipython-notebook:python-2.7"
+                                    }
+                                }
+                            }
+                        ],
+                        "replicas": 1,
+                        "selector": {
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                                    "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                                    "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                                        "image": "s2i-ipython-notebook:python-2.7",
+                                        "ports": [
+                                            {
+                                                "containerPort": 8080,
+                                                "protocol": "TCP"
+                                            }
+                                        ],
+                                        "env": [
+                                            {
+                                                "name": "IPYTHON_CONTAINER_TYPE",
+                                                "value": "viewer"
+                                            },
+                                            {
+                                                "name": "IPYTHON_CLUSTER_LABEL",
+                                                "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            }
+                                        ],
+                                        "resources": {},
+                                        "terminationMessagePath": "/dev/termination-log",
+                                        "imagePullPolicy": "Always"
+                                    }
+                                ],
+                                "restartPolicy": "Always",
+                                "terminationGracePeriodSeconds": 30,
+                                "dnsPolicy": "ClusterFirst",
+                                "securityContext": {}
+                            }
+                        }
+                    },
+                    "status": {}
+                },
+                {
+                    "kind": "Service",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "ports": [
+                            {
+                                "name": "8080-tcp",
+                                "protocol": "TCP",
+                                "port": 8080,
+                                "targetPort": 8080
+                            }
+                        ],
+                        "selector": {
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "type": "ClusterIP",
+                        "sessionAffinity": "None"
+                    },
+                    "status": {
+                        "loadBalancer": {}
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "Template",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "ipython-notebook-repository"
+            },
+            "parameters": [
+                {
+                    "description": "Label for IPython user.",
+                    "name": "IPYTHON_USER_LABEL",
+                    "from": "[a-f0-9]{5}",
+                    "generate": "expression"
+                },
+                {
+                    "description": "Label for IPython cluster.",
+                    "name": "IPYTHON_CLUSTER_LABEL",
+                    "from": "[a-f0-9]{5}",
+                    "generate": "expression"
+                },
+                {
+                    "description": "GIT repository for notebooks.",
+                    "name": "IPYTHON_NOTEBOOK_REPOSITORY",
+                    "value": "https://github.com/jrjohansson/scientific-python-lectures.git",
+                    "required": true
+                }
+            ],
+            "objects": [
+                {
+                    "kind": "ImageStream",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "tags": [
+                            {
+                                "name": "latest"
+                            }
+                        ]
+                    },
+                    "status": {
+                        "dockerImageRepository": ""
+                    }
+                },
+                {
+                    "kind": "BuildConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "triggers": [
+                            {
+                                "type": "GitHub",
+                                "github": {
+                                    "secret": "secret"
+                                }
+                            },
+                            {
+                                "type": "Generic",
+                                "generic": {
+                                    "secret": "secret"
+                                }
+                            },
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChange": {}
+                            }
+                        ],
+                        "source": {
+                            "type": "Git",
+                            "git": {
+                                "uri": "${IPYTHON_NOTEBOOK_REPOSITORY}"
+                            }
+                        },
+                        "strategy": {
+                            "type": "Source",
+                            "sourceStrategy": {
+                                "from": {
+                                    "kind": "ImageStreamTag",
+                                    "name": "s2i-ipython-notebook:python-2.7"
+                                }
+                            }
+                        },
+                        "output": {
+                            "to": {
+                                "kind": "ImageStreamTag",
+                                "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}:latest"
+                            }
+                        },
+                        "resources": {}
+                    },
+                    "status": {
+                        "lastVersion": 0
+                    }
+                },
+                {
+                    "kind": "DeploymentConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "strategy": {
+                            "type": "Recreate",
+                            "resources": {}
+                        },
+                        "triggers": [
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}:latest"
+                                    }
+                                }
+                            }
+                        ],
+                        "replicas": 1,
+                        "selector": {
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                                    "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                                    "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                                        "image": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}:latest",
+                                        "ports": [
+                                            {
+                                                "containerPort": 8080,
+                                                "protocol": "TCP"
+                                            }
+                                        ],
+                                        "env": [
+                                            {
+                                                "name": "IPYTHON_CONTAINER_TYPE",
+                                                "value": "viewer"
+                                            },
+                                            {
+                                                "name": "IPYTHON_CLUSTER_LABEL",
+                                                "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            }
+                                        ],
+                                        "resources": {},
+                                        "terminationMessagePath": "/dev/termination-log",
+                                        "imagePullPolicy": "Always"
+                                    }
+                                ],
+                                "restartPolicy": "Always",
+                                "terminationGracePeriodSeconds": 30,
+                                "dnsPolicy": "ClusterFirst",
+                                "securityContext": {}
+                            }
+                        }
+                    },
+                    "status": {}
+                },
+                {
+                    "kind": "Service",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "ports": [
+                            {
+                                "name": "8080-tcp",
+                                "protocol": "TCP",
+                                "port": 8080,
+                                "targetPort": 8080
+                            }
+                        ],
+                        "selector": {
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "type": "ClusterIP",
+                        "sessionAffinity": "None"
+                    },
+                    "status": {
+                        "loadBalancer": {}
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "Template",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "ipython-cluster-repository"
+            },
+            "parameters": [
+                {
+                    "description": "Label for IPython cluster.",
+                    "name": "IPYTHON_CLUSTER_LABEL",
+                    "from": "[a-f0-9]{5}",
+                    "generate": "expression"
+                },
+                {
+                    "description": "GIT repository for notebooks.",
+                    "name": "IPYTHON_NOTEBOOK_REPOSITORY",
+                    "value": "https://github.com/jrjohansson/scientific-python-lectures.git",
+                    "required": true
+                }
+            ],
+            "objects": [
+                {
+                    "kind": "ImageStream",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "tags": [
+                            {
+                                "name": "latest"
+                            }
+                        ]
+                    },
+                    "status": {
+                        "dockerImageRepository": ""
+                    }
+                },
+                {
+                    "kind": "BuildConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "triggers": [
+                            {
+                                "type": "GitHub",
+                                "github": {
+                                    "secret": "secret"
+                                }
+                            },
+                            {
+                                "type": "Generic",
+                                "generic": {
+                                    "secret": "secret"
+                                }
+                            },
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChange": {}
+                            }
+                        ],
+                        "source": {
+                            "type": "Git",
+                            "git": {
+                                "uri": "${IPYTHON_NOTEBOOK_REPOSITORY}"
+                            }
+                        },
+                        "strategy": {
+                            "type": "Source",
+                            "sourceStrategy": {
+                                "from": {
+                                    "kind": "ImageStreamTag",
+                                    "name": "s2i-ipython-notebook:python-2.7"
+                                }
+                            }
+                        },
+                        "output": {
+                            "to": {
+                                "kind": "ImageStreamTag",
+                                "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}:latest"
+                            }
+                        },
+                        "resources": {}
+                    },
+                    "status": {
+                        "lastVersion": 0
+                    }
+                },
+                {
+                    "kind": "DeploymentConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "strategy": {
+                            "type": "Recreate"
+                        },
+                        "triggers": [
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}:latest"
+                                    }
+                                }
+                            }
+                        ],
+                        "replicas": 1,
+                        "selector": {
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                                    "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                                    "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                                        "image": "grahamdumpleton/s2i-ipython-notebook",
+                                        "ports": [
+                                            {
+                                                "containerPort": 10000,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10001,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10002,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10003,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10004,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10005,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10006,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10007,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10008,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10009,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10010,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10011,
+                                                "protocol": "TCP"
+                                            }
+                                        ],
+                                        "env": [
+                                            {
+                                                "name": "IPYTHON_CONTAINER_TYPE",
+                                                "value": "controller"
+                                            },
+                                            {
+                                                "name": "IPYTHON_CLUSTER_LABEL",
+                                                "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            }
+                                        ],
+                                        "resources": {},
+                                        "terminationMessagePath": "/dev/termination-log",
+                                        "imagePullPolicy": "IfNotPresent"
+                                    }
+                                ],
+                                "restartPolicy": "Always",
+                                "terminationGracePeriodSeconds": 30,
+                                "dnsPolicy": "ClusterFirst",
+                                "securityContext": {}
+                            }
+                        }
+                    },
+                    "status": {}
+                },
+                {
+                    "kind": "DeploymentConfig",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "strategy": {
+                            "type": "Recreate"
+                        },
+                        "triggers": [
+                            {
+                                "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}:latest"
+                                    }
+                                }
+                            }
+                        ],
+                        "replicas": 1,
+                        "selector": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "template": {
+                            "metadata": {
+                                "labels": {
+                                    "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                                    "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                                    "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                                }
+                            },
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                                        "image": "ipcluster-${IPYTHON_CLUSTER_LABEL}",
+                                        "ports": [
+                                            {
+                                                "containerPort": 10000,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10001,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10002,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10003,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10004,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10005,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10006,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10007,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10008,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10009,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10010,
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 10011,
+                                                "protocol": "TCP"
+                                            }
+                                        ],
+                                        "env": [
+                                            {
+                                                "name": "IPYTHON_CONTAINER_TYPE",
+                                                "value": "engine"
+                                            },
+                                            {
+                                                "name": "IPYTHON_CLUSTER_LABEL",
+                                                "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            }
+                                        ],
+                                        "resources": {},
+                                        "terminationMessagePath": "/dev/termination-log",
+                                        "imagePullPolicy": "IfNotPresent"
+                                    }
+                                ],
+                                "restartPolicy": "Always",
+                                "terminationGracePeriodSeconds": 30,
+                                "dnsPolicy": "ClusterFirst",
+                                "securityContext": {}
+                            }
+                        }
+                    },
+                    "status": {}
+                },
+                {
+                    "kind": "Service",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "ports": [
+                            {
+                                "name": "10000-tcp",
+                                "protocol": "TCP",
+                                "port": 10000,
+                                "targetPort": 10000
+                            },
+                            {
+                                "name": "10001-tcp",
+                                "protocol": "TCP",
+                                "port": 10001,
+                                "targetPort": 10001
+                            },
+                            {
+                                "name": "10002-tcp",
+                                "protocol": "TCP",
+                                "port": 10002,
+                                "targetPort": 10002
+                            },
+                            {
+                                "name": "10003-tcp",
+                                "protocol": "TCP",
+                                "port": 10003,
+                                "targetPort": 10003
+                            },
+                            {
+                                "name": "10004-tcp",
+                                "protocol": "TCP",
+                                "port": 10004,
+                                "targetPort": 10004
+                            },
+                            {
+                                "name": "10005-tcp",
+                                "protocol": "TCP",
+                                "port": 10005,
+                                "targetPort": 10005
+                            },
+                            {
+                                "name": "10006-tcp",
+                                "protocol": "TCP",
+                                "port": 10006,
+                                "targetPort": 10006
+                            },
+                            {
+                                "name": "10007-tcp",
+                                "protocol": "TCP",
+                                "port": 10007,
+                                "targetPort": 10007
+                            },
+                            {
+                                "name": "10008-tcp",
+                                "protocol": "TCP",
+                                "port": 10008,
+                                "targetPort": 10008
+                            },
+                            {
+                                "name": "10009-tcp",
+                                "protocol": "TCP",
+                                "port": 10009,
+                                "targetPort": 10009
+                            },
+                            {
+                                "name": "10010-tcp",
+                                "protocol": "TCP",
+                                "port": 10010,
+                                "targetPort": 10010
+                            },
+                            {
+                                "name": "10011-tcp",
+                                "protocol": "TCP",
+                                "port": 10011,
+                                "targetPort": 10011
+                            }
+                        ],
+                        "selector": {
+                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "type": "ClusterIP",
+                        "sessionAffinity": "None"
+                    },
+                    "status": {
+                        "loadBalancer": {}
+                    }
+                },
+                {
+                    "kind": "Service",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "ports": [
+                            {
+                                "name": "10000-tcp",
+                                "protocol": "TCP",
+                                "port": 10000,
+                                "targetPort": 10000
+                            },
+                            {
+                                "name": "10001-tcp",
+                                "protocol": "TCP",
+                                "port": 10001,
+                                "targetPort": 10001
+                            },
+                            {
+                                "name": "10002-tcp",
+                                "protocol": "TCP",
+                                "port": 10002,
+                                "targetPort": 10002
+                            },
+                            {
+                                "name": "10003-tcp",
+                                "protocol": "TCP",
+                                "port": 10003,
+                                "targetPort": 10003
+                            },
+                            {
+                                "name": "10004-tcp",
+                                "protocol": "TCP",
+                                "port": 10004,
+                                "targetPort": 10004
+                            },
+                            {
+                                "name": "10005-tcp",
+                                "protocol": "TCP",
+                                "port": 10005,
+                                "targetPort": 10005
+                            },
+                            {
+                                "name": "10006-tcp",
+                                "protocol": "TCP",
+                                "port": 10006,
+                                "targetPort": 10006
+                            },
+                            {
+                                "name": "10007-tcp",
+                                "protocol": "TCP",
+                                "port": 10007,
+                                "targetPort": 10007
+                            },
+                            {
+                                "name": "10008-tcp",
+                                "protocol": "TCP",
+                                "port": 10008,
+                                "targetPort": 10008
+                            },
+                            {
+                                "name": "10009-tcp",
+                                "protocol": "TCP",
+                                "port": 10009,
+                                "targetPort": 10009
+                            },
+                            {
+                                "name": "10010-tcp",
+                                "protocol": "TCP",
+                                "port": 10010,
+                                "targetPort": 10010
+                            },
+                            {
+                                "name": "10011-tcp",
+                                "protocol": "TCP",
+                                "port": 10011,
+                                "targetPort": 10011
+                            }
+                        ],
+                        "selector": {
+                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "type": "ClusterIP",
+                        "sessionAffinity": "None"
+                    },
+                    "status": {
+                        "loadBalancer": {}
+                    }
+                }
+            ]
+        }
+    ]
+}
