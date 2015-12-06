@@ -499,7 +499,7 @@
                     "name": "IPYTHON_CLUSTER_LABEL",
                     "from": "[a-f0-9]{5}",
                     "generate": "expression"
-                },
+                }
             ],
             "objects": [
                 {
