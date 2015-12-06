@@ -606,6 +606,30 @@
                     "status": {
                         "loadBalancer": {}
                     }
+                },
+                {
+                    "kind": "Route",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "to": {
+                            "kind": "Service",
+                            "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "port": {
+                            "targetPort": "8080"
+                        },
+                        "tls": {
+                            "termination": "edge"
+                        }
+                    },
+                    "status": {}
                 }
             ]
         },
@@ -826,6 +850,30 @@
                     "status": {
                         "loadBalancer": {}
                     }
+                },
+                {
+                    "kind": "Route",
+                    "apiVersion": "v1",
+                    "metadata": {
+                        "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                        "labels": {
+                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}"
+                        }
+                    },
+                    "spec": {
+                        "to": {
+                            "kind": "Service",
+                            "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        },
+                        "port": {
+                            "targetPort": "8080"
+                        },
+                        "tls": {
+                            "termination": "edge"
+                        }
+                    },
+                    "status": {}
                 }
             ]
         },
