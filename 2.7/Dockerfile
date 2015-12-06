@@ -19,6 +19,8 @@ COPY start.sh /app/.whiskey/action_hooks/start
 
 COPY profile /.whiskey/ipython/profile_default
 
+COPY config.py /var/www/.jupyter/jupyter_notebook_config.py
+
 EXPOSE 8080
 
 EXPOSE 10000-10011

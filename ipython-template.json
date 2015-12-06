@@ -489,11 +489,17 @@
                     "generate": "expression"
                 },
                 {
+                    "description": "Password for IPython user.",
+                    "name": "IPYTHON_USER_PASSWORD",
+                    "from": "[a-f0-9]{8}",
+                    "generate": "expression"
+                },
+                {
                     "description": "Label for IPython cluster.",
                     "name": "IPYTHON_CLUSTER_LABEL",
                     "from": "[a-f0-9]{5}",
                     "generate": "expression"
-                }
+                },
             ],
             "objects": [
                 {
@@ -561,6 +567,10 @@
                                             {
                                                 "name": "IPYTHON_CLUSTER_LABEL",
                                                 "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            },
+                                            {
+                                                "name": "IPYTHON_USER_PASSWORD",
+                                                "value": "${IPYTHON_USER_PASSWORD}"
                                             }
                                         ],
                                         "resources": {},
@@ -644,6 +654,12 @@
                     "description": "Label for IPython user.",
                     "name": "IPYTHON_USER_LABEL",
                     "from": "[a-f0-9]{5}",
+                    "generate": "expression"
+                },
+                {
+                    "description": "Password for IPython user.",
+                    "name": "IPYTHON_USER_PASSWORD",
+                    "from": "[a-f0-9]{8}",
                     "generate": "expression"
                 },
                 {
@@ -805,6 +821,10 @@
                                             {
                                                 "name": "IPYTHON_CLUSTER_LABEL",
                                                 "value": "${IPYTHON_CLUSTER_LABEL}"
+                                            },
+                                            {
+                                                "name": "IPYTHON_USER_PASSWORD",
+                                                "value": "${IPYTHON_USER_PASSWORD}"
                                             }
                                         ],
                                         "resources": {},
