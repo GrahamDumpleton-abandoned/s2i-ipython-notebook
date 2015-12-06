@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cp -rp /.whiskey/jupyter $HOME/.jupyter
 cp -rp /.whiskey/ipython $HOME/.ipython
 
 if [ x"$IPYTHON_CLUSTER_LABEL" != x"" ]; then
