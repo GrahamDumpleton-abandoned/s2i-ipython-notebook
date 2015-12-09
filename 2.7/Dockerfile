@@ -4,21 +4,15 @@ RUN apt-get update && apt-get install -y libfreetype6 libfreetype6-dev \
     libpng++ libpng++-dev liblapack-dev libatlas-dev gfortran && \
     rm -r /var/lib/apt/lists/*
 
-RUN pip install jupyter
-RUN pip install ipython[notebook]
-RUN pip install matplotlib
-RUN pip install sympy
-RUN pip install ipyparallel
-RUN pip install scipy
+RUN pip install --no-cache-dir jupyter ipython[notebook] matplotlib \
+    sympy ipyparallel scipy
 
-RUN chmod 1777 /app
-
-USER 33
+USER 1001
 
 COPY start.sh /app/.whiskey/action_hooks/start
 
-COPY profile /.whiskey/ipython/profile_default
-COPY config.py /.whiskey/jupyter/jupyter_notebook_config.py
+COPY profile /home/whiskey/ipython/profile_default
+COPY config.py /home/whiskey/jupyter/jupyter_notebook_config.py
 
 EXPOSE 8080
 
