@@ -7,7 +7,7 @@ Only Python 2.7 is supported at this point in time. The resulting Docker image c
 The Docker image actually provides a number of capabilities. These are:
 
 * Ability to be run directly to provide an online IPython notebook viewer.
-* Ability to be run to create a controller instance for an IPython engineer cluster.
+* Ability to be run to create a controller instance for an IPython engine cluster.
 * Ability to be run to create an instance of an IPython engine participating in a cluster.
 
 The Docker image can be used as a base image to create a custom derived image which installs additional required system packages, Python packages, or which incorporates IPython notebooks to be used via the IPython notebook browser.
