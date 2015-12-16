@@ -4,23 +4,13 @@
     "metadata": {},
     "items": [
         {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "s2i-ipython-notebook"
-            },
-            "spec": {
-                "dockerImageRepository": "grahamdumpleton/s2i-ipython-notebook"
-            },
-            "status": {
-                "dockerImageRepository": ""
-            }
-        },
-        {
             "kind": "Template",
             "apiVersion": "v1",
             "metadata": {
                 "name": "ipython-cluster-workspace"
+            },
+            "labels": {
+                "ipython-template": "ipcluster"
             },
             "parameters": [
                 {
@@ -38,49 +28,33 @@
                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
-                        "strategy": {
-                            "type": "Recreate"
-                        },
                         "triggers": [
                             {
                                 "type": "ConfigChange"
-                            },
-                            {
-                                "type": "ImageChange",
-                                "imageChangeParams": {
-                                    "automatic": true,
-                                    "containerNames": [
-                                        "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
-                                    ],
-                                    "from": {
-                                        "kind": "ImageStreamTag",
-                                        "name": "s2i-ipython-notebook:python-2.7"
-                                    }
-                                }
                             }
                         ],
                         "replicas": 1,
                         "selector": {
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
                         },
                         "template": {
                             "metadata": {
                                 "labels": {
                                     "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                                    "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                                    "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                                    "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                                    "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                                 }
                             },
                             "spec": {
                                 "containers": [
                                     {
                                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                                        "image": "grahamdumpleton/s2i-ipython-notebook",
+                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 10000,
@@ -140,20 +114,12 @@
                                                 "name": "IPYTHON_CLUSTER_LABEL",
                                                 "value": "${IPYTHON_CLUSTER_LABEL}"
                                             }
-                                        ],
-                                        "resources": {},
-                                        "terminationMessagePath": "/dev/termination-log",
-                                        "imagePullPolicy": "IfNotPresent"
+                                        ]
                                     }
-                                ],
-                                "restartPolicy": "Always",
-                                "terminationGracePeriodSeconds": 30,
-                                "dnsPolicy": "ClusterFirst",
-                                "securityContext": {}
+                                ]
                             }
                         }
-                    },
-                    "status": {}
+                    }
                 },
                 {
                     "kind": "DeploymentConfig",
@@ -162,51 +128,33 @@
                         "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
-                        "strategy": {
-                            "type": "Recreate"
-                        },
                         "triggers": [
                             {
                                 "type": "ConfigChange"
-                            },
-                            {
-                                "type": "ImageChange",
-                                "imageChangeParams": {
-                                    "automatic": true,
-                                    "containerNames": [
-                                        "ipengine-${IPYTHON_CLUSTER_LABEL}"
-                                    ],
-                                    "from": {
-                                        "kind": "ImageStreamTag",
-                                        "name": "s2i-ipython-notebook:python-2.7"
-                                    }
-                                }
                             }
                         ],
                         "replicas": 1,
                         "selector": {
-                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}"
                         },
                         "template": {
                             "metadata": {
                                 "labels": {
                                     "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                                    "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                                    "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                                    "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                                    "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                                 }
                             },
                             "spec": {
                                 "containers": [
                                     {
                                         "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                                        "image":
-                                        "grahamdumpleton/s2i-ipython-notebook:python-2.7",
+                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 10000,
@@ -266,20 +214,12 @@
                                                 "name": "IPYTHON_CLUSTER_LABEL",
                                                 "value": "${IPYTHON_CLUSTER_LABEL}"
                                             }
-                                        ],
-                                        "resources": {},
-                                        "terminationMessagePath": "/dev/termination-log",
-                                        "imagePullPolicy": "IfNotPresent"
+                                        ]
                                     }
-                                ],
-                                "restartPolicy": "Always",
-                                "terminationGracePeriodSeconds": 30,
-                                "dnsPolicy": "ClusterFirst",
-                                "securityContext": {}
+                                ]
                             }
                         }
-                    },
-                    "status": {}
+                    }
                 },
                 {
                     "kind": "Service",
@@ -288,7 +228,8 @@
                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -367,14 +308,8 @@
                             }
                         ],
                         "selector": {
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
-                        },
-                        "type": "ClusterIP",
-                        "sessionAffinity": "None"
-                    },
-                    "status": {
-                        "loadBalancer": {}
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        }
                     }
                 },
                 {
@@ -384,7 +319,8 @@
                         "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -463,14 +399,8 @@
                             }
                         ],
                         "selector": {
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
-                        },
-                        "type": "ClusterIP",
-                        "sessionAffinity": "None"
-                    },
-                    "status": {
-                        "loadBalancer": {}
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        }
                     }
                 }
             ]
@@ -480,6 +410,9 @@
             "apiVersion": "v1",
             "metadata": {
                 "name": "ipython-notebook-workspace"
+            },
+            "labels": {
+                "ipython-template": "nbviewer"
             },
             "parameters": [
                 {
@@ -509,50 +442,33 @@
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
-                        "strategy": {
-                            "type": "Recreate",
-                            "resources": {}
-                        },
                         "triggers": [
                             {
                                 "type": "ConfigChange"
-                            },
-                            {
-                                "type": "ImageChange",
-                                "imageChangeParams": {
-                                    "automatic": true,
-                                    "containerNames": [
-                                        "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
-                                    ],
-                                    "from": {
-                                        "kind": "ImageStreamTag",
-                                        "name": "s2i-ipython-notebook:python-2.7"
-                                    }
-                                }
                             }
                         ],
                         "replicas": 1,
                         "selector": {
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         },
                         "template": {
                             "metadata": {
                                 "labels": {
                                     "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                                    "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                                    "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                                    "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                                    "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                                 }
                             },
                             "spec": {
                                 "containers": [
                                     {
                                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                                        "image": "s2i-ipython-notebook:python-2.7",
+                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 8080,
@@ -572,20 +488,12 @@
                                                 "name": "IPYTHON_USER_PASSWORD",
                                                 "value": "${IPYTHON_USER_PASSWORD}"
                                             }
-                                        ],
-                                        "resources": {},
-                                        "terminationMessagePath": "/dev/termination-log",
-                                        "imagePullPolicy": "Always"
+                                        ]
                                     }
-                                ],
-                                "restartPolicy": "Always",
-                                "terminationGracePeriodSeconds": 30,
-                                "dnsPolicy": "ClusterFirst",
-                                "securityContext": {}
+                                ]
                             }
                         }
-                    },
-                    "status": {}
+                    }
                 },
                 {
                     "kind": "Service",
@@ -594,7 +502,8 @@
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -607,14 +516,8 @@
                             }
                         ],
                         "selector": {
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
-                        },
-                        "type": "ClusterIP",
-                        "sessionAffinity": "None"
-                    },
-                    "status": {
-                        "loadBalancer": {}
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
                     }
                 },
                 {
@@ -623,8 +526,9 @@
                     "metadata": {
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -638,8 +542,7 @@
                         "tls": {
                             "termination": "edge"
                         }
-                    },
-                    "status": {}
+                    }
                 }
             ]
         },
@@ -648,6 +551,9 @@
             "apiVersion": "v1",
             "metadata": {
                 "name": "ipython-notebook-repository"
+            },
+            "labels": {
+                "ipython-template": "nbviewer"
             },
             "parameters": [
                 {
@@ -683,7 +589,8 @@
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -704,23 +611,11 @@
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
                         "triggers": [
-                            {
-                                "type": "GitHub",
-                                "github": {
-                                    "secret": "secret"
-                                }
-                            },
-                            {
-                                "type": "Generic",
-                                "generic": {
-                                    "secret": "secret"
-                                }
-                            },
                             {
                                 "type": "ConfigChange"
                             },
@@ -739,8 +634,8 @@
                             "type": "Source",
                             "sourceStrategy": {
                                 "from": {
-                                    "kind": "ImageStreamTag",
-                                    "name": "s2i-ipython-notebook:python-2.7"
+                                    "kind": "DockerImage",
+                                    "name": "grahamdumpleton/s2i-ipython-notebook:python-2.7"
                                 }
                             }
                         },
@@ -749,11 +644,7 @@
                                 "kind": "ImageStreamTag",
                                 "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}:latest"
                             }
-                        },
-                        "resources": {}
-                    },
-                    "status": {
-                        "lastVersion": 0
+                        }
                     }
                 },
                 {
@@ -763,14 +654,11 @@
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
-                        "strategy": {
-                            "type": "Recreate",
-                            "resources": {}
-                        },
                         "triggers": [
                             {
                                 "type": "ConfigChange"
@@ -778,7 +666,6 @@
                             {
                                 "type": "ImageChange",
                                 "imageChangeParams": {
-                                    "automatic": true,
                                     "containerNames": [
                                         "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                                     ],
@@ -791,15 +678,14 @@
                         ],
                         "replicas": 1,
                         "selector": {
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         },
                         "template": {
                             "metadata": {
                                 "labels": {
                                     "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                                    "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                                    "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                                    "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                                    "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                                 }
                             },
                             "spec": {
@@ -826,20 +712,12 @@
                                                 "name": "IPYTHON_USER_PASSWORD",
                                                 "value": "${IPYTHON_USER_PASSWORD}"
                                             }
-                                        ],
-                                        "resources": {},
-                                        "terminationMessagePath": "/dev/termination-log",
-                                        "imagePullPolicy": "Always"
+                                        ]
                                     }
-                                ],
-                                "restartPolicy": "Always",
-                                "terminationGracePeriodSeconds": 30,
-                                "dnsPolicy": "ClusterFirst",
-                                "securityContext": {}
+                                ]
                             }
                         }
-                    },
-                    "status": {}
+                    }
                 },
                 {
                     "kind": "Service",
@@ -848,7 +726,8 @@
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -861,14 +740,8 @@
                             }
                         ],
                         "selector": {
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
-                        },
-                        "type": "ClusterIP",
-                        "sessionAffinity": "None"
-                    },
-                    "status": {
-                        "loadBalancer": {}
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                        }
                     }
                 },
                 {
@@ -877,8 +750,9 @@
                     "metadata": {
                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
-                            "app": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-process": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -892,8 +766,7 @@
                         "tls": {
                             "termination": "edge"
                         }
-                    },
-                    "status": {}
+                    }
                 }
             ]
         },
@@ -902,6 +775,9 @@
             "apiVersion": "v1",
             "metadata": {
                 "name": "ipython-cluster-repository"
+            },
+            "labels": {
+                "ipython-template": "ipcluster"
             },
             "parameters": [
                 {
@@ -925,7 +801,7 @@
                         "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -946,23 +822,11 @@
                         "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
                         "triggers": [
-                            {
-                                "type": "GitHub",
-                                "github": {
-                                    "secret": "secret"
-                                }
-                            },
-                            {
-                                "type": "Generic",
-                                "generic": {
-                                    "secret": "secret"
-                                }
-                            },
                             {
                                 "type": "ConfigChange"
                             },
@@ -981,8 +845,8 @@
                             "type": "Source",
                             "sourceStrategy": {
                                 "from": {
-                                    "kind": "ImageStreamTag",
-                                    "name": "s2i-ipython-notebook:python-2.7"
+                                    "kind": "DockerImage",
+                                    "name": "grahamdumpleton/s2i-ipython-notebook:python-2.7"
                                 }
                             }
                         },
@@ -991,11 +855,7 @@
                                 "kind": "ImageStreamTag",
                                 "name": "ipcluster-${IPYTHON_CLUSTER_LABEL}:latest"
                             }
-                        },
-                        "resources": {}
-                    },
-                    "status": {
-                        "lastVersion": 0
+                        }
                     }
                 },
                 {
@@ -1005,13 +865,11 @@
                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
-                        "strategy": {
-                            "type": "Recreate"
-                        },
                         "triggers": [
                             {
                                 "type": "ConfigChange"
@@ -1019,7 +877,6 @@
                             {
                                 "type": "ImageChange",
                                 "imageChangeParams": {
-                                    "automatic": true,
                                     "containerNames": [
                                         "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
                                     ],
@@ -1032,22 +889,21 @@
                         ],
                         "replicas": 1,
                         "selector": {
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
                         },
                         "template": {
                             "metadata": {
                                 "labels": {
                                     "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                                    "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                                    "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                                    "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                                    "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                                 }
                             },
                             "spec": {
                                 "containers": [
                                     {
                                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                                        "image": "grahamdumpleton/s2i-ipython-notebook",
+                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 10000,
@@ -1107,20 +963,12 @@
                                                 "name": "IPYTHON_CLUSTER_LABEL",
                                                 "value": "${IPYTHON_CLUSTER_LABEL}"
                                             }
-                                        ],
-                                        "resources": {},
-                                        "terminationMessagePath": "/dev/termination-log",
-                                        "imagePullPolicy": "IfNotPresent"
+                                        ]
                                     }
-                                ],
-                                "restartPolicy": "Always",
-                                "terminationGracePeriodSeconds": 30,
-                                "dnsPolicy": "ClusterFirst",
-                                "securityContext": {}
+                                ]
                             }
                         }
-                    },
-                    "status": {}
+                    }
                 },
                 {
                     "kind": "DeploymentConfig",
@@ -1129,13 +977,11 @@
                         "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
-                        "strategy": {
-                            "type": "Recreate"
-                        },
                         "triggers": [
                             {
                                 "type": "ConfigChange"
@@ -1143,7 +989,6 @@
                             {
                                 "type": "ImageChange",
                                 "imageChangeParams": {
-                                    "automatic": true,
                                     "containerNames": [
                                         "ipengine-${IPYTHON_CLUSTER_LABEL}"
                                     ],
@@ -1156,16 +1001,14 @@
                         ],
                         "replicas": 1,
                         "selector": {
-                            "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}"
                         },
                         "template": {
                             "metadata": {
                                 "labels": {
                                     "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                                    "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                                    "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                                    "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                                    "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                                 }
                             },
                             "spec": {
@@ -1232,20 +1075,12 @@
                                                 "name": "IPYTHON_CLUSTER_LABEL",
                                                 "value": "${IPYTHON_CLUSTER_LABEL}"
                                             }
-                                        ],
-                                        "resources": {},
-                                        "terminationMessagePath": "/dev/termination-log",
-                                        "imagePullPolicy": "IfNotPresent"
+                                        ]
                                     }
-                                ],
-                                "restartPolicy": "Always",
-                                "terminationGracePeriodSeconds": 30,
-                                "dnsPolicy": "ClusterFirst",
-                                "securityContext": {}
+                                ]
                             }
                         }
-                    },
-                    "status": {}
+                    }
                 },
                 {
                     "kind": "Service",
@@ -1254,7 +1089,8 @@
                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -1333,14 +1169,8 @@
                             }
                         ],
                         "selector": {
-                            "app": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
-                        },
-                        "type": "ClusterIP",
-                        "sessionAffinity": "None"
-                    },
-                    "status": {
-                        "loadBalancer": {}
+                            "ipython-process": "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                        }
                     }
                 },
                 {
@@ -1350,7 +1180,8 @@
                         "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
                         "labels": {
                             "ipython-cluster": "${IPYTHON_CLUSTER_LABEL}",
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}",
+                            "ipython-instance": "ipcluster-${IPYTHON_CLUSTER_LABEL}"
                         }
                     },
                     "spec": {
@@ -1429,14 +1260,8 @@
                             }
                         ],
                         "selector": {
-                            "app": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                            "deploymentconfig": "ipengine-${IPYTHON_CLUSTER_LABEL}"
-                        },
-                        "type": "ClusterIP",
-                        "sessionAffinity": "None"
-                    },
-                    "status": {
-                        "loadBalancer": {}
+                            "ipython-process": "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                        }
                     }
                 }
             ]

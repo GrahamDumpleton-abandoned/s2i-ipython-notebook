@@ -33,7 +33,6 @@ Areas which still need to be looked are:
 At this point in time the following known issues also exist:
 
 * When building a workspace from a GIT repository, although the image build is adequately quick, it is taking a lot longer than expected for that image to be pushed out to nodes in an OpenShift environment the first time. This does appear to be related to the specific OpenShift environment setup as doesn't occur on all environments. The issue is still being investigated.
-* The application templates will only work when loaded into a project, they cannot be loaded into the ``openshift`` namespace for use across all projects.
 * The application templates do not work under OpenShift 3.0, only 3.1.
 
 Finally be aware that since this is a proof of concept, don't expect that it will continue to work in the same way over time or even that the names of images will stay the same. It is likely inevitable that there will be changes as the concept is developed.
@@ -49,6 +48,10 @@ The OpenShift templates can be found at:
 To load the templates into an OpenShift environment you can use the command:
 
     oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-template.json
+
+If desired and you have administration access, you can also load the templates into the ``openshift`` namespace so that they are available automatically across all projects.
+
+    oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-template.json -n openshift
 
 ## Available application templates
 
