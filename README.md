@@ -24,7 +24,7 @@ The Docker image created from this repository is a proof of concept only. The au
 
 The work done so far will only therefore progress further with sufficient feedback, or better still, direct involvement of people who are users of IPython who see some benefit from developing it further and who may be willing to take over the project.
 
-Areas which still need to be developed are:
+Areas which still need to be looked are:
 
 * List of pre installed Python packages necessary to provide a good base environment.
 * Support for persistent volumes under OpenShift to allow retention of in progress work.
@@ -32,7 +32,9 @@ Areas which still need to be developed are:
 
 At this point in time the following known issues also exist:
 
-* When building a workspace from a GIT repository, although the image build is adequately quick, it is taking a lot longer than expected for that image to be pushed out to nodes in an OpenShift environment. It is not known yet what limitation is being encountered or whether it is a setup issue with the specific OpenShift environment used for testing.
+* When building a workspace from a GIT repository, although the image build is adequately quick, it is taking a lot longer than expected for that image to be pushed out to nodes in an OpenShift environment the first time. This does appear to be related to the specific OpenShift environment setup as doesn't occur on all environments. The issue is still being investigated.
+* The application templates will only work when loaded into a project, they cannot be loaded into the ``openshift`` namespace for use across all projects.
+* The application templates do not work under OpenShift 3.0, only 3.1.
 
 Finally be aware that since this is a proof of concept, don't expect that it will continue to work in the same way over time or even that the names of images will stay the same. It is likely inevitable that there will be changes as the concept is developed.
 
@@ -47,12 +49,6 @@ The OpenShift templates can be found at:
 To load the templates into an OpenShift environment you can use the command:
 
     oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-template.json
-
-The templates can be loaded into just the project it is required for, or if you have administration access it can be loaded into the ``openshift`` namespace if it should be available across all projects within the OpenShift environment.
-
-To load the templates into the ``openshift`` namespace use the command:
-
-    oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-template.json -n openshift
 
 ## Available application templates
 
@@ -90,7 +86,7 @@ The purpose of the parameters are as follows:
 * **IPYTHON_USER_PASSWORD** - A known password for accessing the IPython notebook viewer instance. If not supplied and a random value used, that value can be determined by interrogating the environment of the deployment configuration for the application created.
 * **IPYTHON_CLUSTER_LABEL** - Label for identifying an IPython cluster being created as backend to this IPython notebook viewer instance.
 
-To create a workspace which is populated with the contents of a GIT repository, for example, notebooks, data set file etc, select the ``python-notebook-repository`` template from the UI when adding to an existing project. You will be presented with the following template parameters.
+To create a workspace which is populated with the contents of a GIT repository, for example, notebooks, data set file etc, select the ``ipython-notebook-repository`` template from the UI when adding to an existing project. You will be presented with the following template parameters.
 
 ![image](./docs/OpenShiftIPythonNotebookRepository.jpg)
 
@@ -155,7 +151,7 @@ In order to associate this IPython cluster with a specific users IPython noteboo
 
 As no user name need be supplied, you technically could link up the IPython cluster with multiple IPython notebook viewer application instances for different users if that made sense for the use case.
 
-To create an IPython engine cluster which is populated with the contents of a GIT repository, for example, data set files etc, select the ``python-cluster-repository`` template from the UI when adding to an existing project. You will be presented with the following template parameters.
+To create an IPython engine cluster which is populated with the contents of a GIT repository, for example, data set files etc, select the ``ipython-cluster-repository`` template from the UI when adding to an existing project. You will be presented with the following template parameters.
 
 ![image](./docs/OpenShiftIPythonClusterRepository.jpg)
 
