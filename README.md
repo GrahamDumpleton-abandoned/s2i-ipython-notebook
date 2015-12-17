@@ -43,7 +43,7 @@ If you do try out the Docker images and use it with OpenShift, please register y
 
 The OpenShift templates can be found at:
 
-* https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-template.json
+* https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-templates.json
 
 To load the templates into an OpenShift environment you can use the command:
 
