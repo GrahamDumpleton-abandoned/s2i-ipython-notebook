@@ -47,11 +47,11 @@ The OpenShift templates can be found at:
 
 To load the templates into an OpenShift environment you can use the command:
 
-    oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-template.json
+    oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-templates.json
 
 If desired and you have administration access, you can also load the templates into the ``openshift`` namespace so that they are available automatically across all projects.
 
-    oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-template.json -n openshift
+    oc create -f https://raw.githubusercontent.com/GrahamDumpleton/s2i-ipython-notebook/master/ipython-templates.json -n openshift
 
 ## Available application templates
 
