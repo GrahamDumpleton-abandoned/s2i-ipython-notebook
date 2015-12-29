@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir jupyter ipython[notebook] matplotlib \
 
 USER 1001
 
-COPY start.sh /app/.whiskey/action_hooks/start
+COPY start.sh /home/whiskey/start
 
 COPY profile /home/whiskey/ipython/profile_default
 COPY config.py /home/whiskey/jupyter/jupyter_notebook_config.py
@@ -18,4 +18,6 @@ EXPOSE 8080
 
 EXPOSE 10000-10011
 
-CMD [ "mod_wsgi-docker-start" ]
+ENTRYPOINT [ "mod_wsgi-docker-entrypoint" ]
+
+CMD [ "/home/whiskey/start" ]
