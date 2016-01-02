@@ -4,6 +4,19 @@
     "metadata": {},
     "items": [
         {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "s2i-ipython-notebook"
+            },
+            "spec": {
+                "dockerImageRepository": "grahamdumpleton/s2i-ipython-notebook"
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
             "kind": "Template",
             "apiVersion": "v1",
             "metadata": {
@@ -36,6 +49,19 @@
                         "triggers": [
                             {
                                 "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "ipcontroller-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "s2i-ipython-notebook:python-2.7"
+                                    }
+                                }
                             }
                         ],
                         "replicas": 1,
@@ -54,7 +80,7 @@
                                 "containers": [
                                     {
                                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
+                                        "image": "s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 10000,
@@ -136,6 +162,19 @@
                         "triggers": [
                             {
                                 "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "ipengine-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "s2i-ipython-notebook:python-2.7"
+                                    }
+                                }
                             }
                         ],
                         "replicas": 1,
@@ -154,7 +193,7 @@
                                 "containers": [
                                     {
                                         "name": "ipengine-${IPYTHON_CLUSTER_LABEL}",
-                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
+                                        "image": "s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 10000,
@@ -450,6 +489,19 @@
                         "triggers": [
                             {
                                 "type": "ConfigChange"
+                            },
+                            {
+                                "type": "ImageChange",
+                                "imageChangeParams": {
+                                    "automatic": true,
+                                    "containerNames": [
+                                        "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}"
+                                    ],
+                                    "from": {
+                                        "kind": "ImageStreamTag",
+                                        "name": "s2i-ipython-notebook:python-2.7"
+                                    }
+                                }
                             }
                         ],
                         "replicas": 1,
@@ -468,7 +520,7 @@
                                 "containers": [
                                     {
                                         "name": "nbviewer-${IPYTHON_USER_LABEL}-${IPYTHON_CLUSTER_LABEL}",
-                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
+                                        "image": "s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 8080,
@@ -634,8 +686,8 @@
                             "type": "Source",
                             "sourceStrategy": {
                                 "from": {
-                                    "kind": "DockerImage",
-                                    "name": "grahamdumpleton/s2i-ipython-notebook:python-2.7"
+                                    "kind": "ImageStreamTag",
+                                    "name": "s2i-ipython-notebook:python-2.7"
                                 }
                             }
                         },
@@ -845,8 +897,8 @@
                             "type": "Source",
                             "sourceStrategy": {
                                 "from": {
-                                    "kind": "DockerImage",
-                                    "name": "grahamdumpleton/s2i-ipython-notebook:python-2.7"
+                                    "kind": "ImageStreamTag",
+                                    "name": "s2i-ipython-notebook:python-2.7"
                                 }
                             }
                         },
@@ -903,7 +955,7 @@
                                 "containers": [
                                     {
                                         "name": "ipcontroller-${IPYTHON_CLUSTER_LABEL}",
-                                        "image": "grahamdumpleton/s2i-ipython-notebook:python-2.7",
+                                        "image": "s2i-ipython-notebook:python-2.7",
                                         "ports": [
                                             {
                                                 "containerPort": 10000,
