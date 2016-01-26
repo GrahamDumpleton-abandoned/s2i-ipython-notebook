@@ -11,12 +11,12 @@ USER 1001
 RUN pip install --no-cache-dir jupyter ipython[notebook] matplotlib \
     sympy ipyparallel scipy
 
-COPY profile /home/warpdrive/ipython/profile_default
-COPY config.py /home/warpdrive/jupyter/jupyter_notebook_config.py
+COPY ipython/ /home/warpdrive/ipython/
+COPY jupyter/ /home/warpdrive/jupyter/
 
-COPY start.sh /home/warpdrive/action_hooks/start
+COPY app.sh /home/warpdrive/app.sh
 
-ENV WARPDRIVE_SHELL_FILE=/home/warpdrive/action_hooks/start
+ENV WARPDRIVE_SHELL_FILE=/home/warpdrive/app.sh
 
 EXPOSE 8080
 
