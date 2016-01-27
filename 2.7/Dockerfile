@@ -1,4 +1,4 @@
-FROM grahamdumpleton/warp0-python27-debian8
+FROM grahamdumpleton/warp0-debian8-python27
 
 USER 0
 
