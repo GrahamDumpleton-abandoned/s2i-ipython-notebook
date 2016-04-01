@@ -11,12 +11,12 @@ USER 1001
 RUN pip install --no-cache-dir jupyter ipython[notebook] matplotlib \
     sympy ipyparallel scipy
 
-COPY ipython/ /home/warpdrive/ipython/
-COPY jupyter/ /home/warpdrive/jupyter/
+COPY ipython/ /opt/app-root/ipython/
+COPY jupyter/ /opt/app-root/jupyter/
 
-COPY app.sh /home/warpdrive/app.sh
+COPY app.sh /opt/apt-root/app.sh
 
-ENV WARPDRIVE_SHELL_FILE=/home/warpdrive/app.sh
+ENV WARPDRIVE_SHELL_FILE=/opt/app-root/app.sh
 
 EXPOSE 8080
 
