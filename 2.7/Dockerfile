@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir jupyter ipython[notebook] matplotlib \
 COPY ipython/ /opt/app-root/ipython/
 COPY jupyter/ /opt/app-root/jupyter/
 
-COPY app.sh /opt/apt-root/app.sh
+COPY app.sh /opt/app-root/app.sh
 
 ENV WARPDRIVE_SHELL_FILE=/opt/app-root/app.sh
 
