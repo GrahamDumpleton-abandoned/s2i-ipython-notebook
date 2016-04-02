@@ -20,7 +20,7 @@ if [ x"$IPYTHON_CONTAINER_TYPE" = x"engine" ]; then
     exec ipengine
 fi
 
-IPYTHON_NOTEBOOK_DIR=${IPYTHON_NOTEBOOK_DIR:-/app}
+IPYTHON_NOTEBOOK_DIR=${IPYTHON_NOTEBOOK_DIR:-/opt/app-root/src}
 
 exec ipython notebook --no-browser --debug --log-level=DEBUG \
     --notebook-dir=$IPYTHON_NOTEBOOK_DIR --ip=* --port=8080
